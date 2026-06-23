@@ -68,14 +68,15 @@ header = (
             "\r\n"
         )
 
+lock=threading.Lock()
 def handle_client(csocket, caddress):
     try:
-
+        # print(f"{csocket}")
         print(f"Connected: {caddress}")
         request = csocket.recv(1024)
         rtext=request.decode('utf-8')
+        # print(rtext)
         if rtext.startswith("POST"):
-
             body = rtext.split("\r\n\r\n")[1]
             r=body.split("&")
 
@@ -89,7 +90,6 @@ def handle_client(csocket, caddress):
             k=dict1["username"].replace("+"," ")
             dict1["username"]=k
             print(dict1)
-            lock=threading.Lock()
             with lock:
                 ws.append([dict1["username"], dict1["email"]])
                 wb.save("users.xlsx")
